@@ -1,0 +1,11 @@
+auth            include         system-auth
+
+account         required        pam_access.so
+account         required        pam_nologin.so
+account         include         system-auth
+
+password        include         system-auth
+
+session         optional        pam_loginuid.so
+session         required        pam_env.so
+session         include         system-auth
