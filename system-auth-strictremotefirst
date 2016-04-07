@@ -1,9 +1,11 @@
+# Strict remote first authentication order.
+
 auth required pam_env.so
 auth [default=ignore success=1] pam_succeed_if.so uid = 0
 auth [default=ignore success=1] pam_succeed_if.so uid != 0
-auth sufficient pam_unix.so likeauth nullok
+auth [success=done new_authtok_reqd=done default=done] pam_unix.so likeauth nullok try_first_pass debug
 auth [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so encrypt try_first_pass
-auth sufficient pam_unix.so likeauth try_first_pass
+auth [success=done new_authtok_reqd=done default=done] pam_unix.so likeauth nullok try_first_pass debug
 auth sufficient pam_radius_auth.so use_first_pass
 auth required pam_deny.so
 
