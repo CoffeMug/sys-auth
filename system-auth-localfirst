@@ -1,21 +1,24 @@
-# Local first authentication order.
+# Remote first authentication order.
 
-auth required pam_env.so
-auth [default=ignore success=1] pam_succeed_if.so uid = 0
-auth [default=ignore success=1] pam_succeed_if.so uid != 0
-auth [success=done new_authtok_reqd=done default=done] pam_unix.so likeauth nullok try_first_pass debug
-auth [success=done new_authtok_reqd=done default=ignore] pam_unix.so likeauth nullok try_first_pass debug
-auth [success=done new_authtok_reqd=ok authinfo_unavail=ignore] pam_tacplus.so encrypt try_first_pass
-auth sufficient pam_radius_auth.so use_first_pass
-auth required pam_deny.so
+auth 	 required        pam_env.so
+auth 	 [default=ignore success=2] pam_succeed_if.so uid = 0
+auth 	 [default=ignore success=1] pam_succeed_if.so user = oper
+auth 	 [default=ignore success=1] pam_succeed_if.so uid != 0
+auth 	 sufficient pam_unix.so likeauth nullok 
+auth 	 sufficient pam_unix.so likeauth try_first_pass 
+auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so encrypt try_first_pass debug 
+auth 	 sufficient pam_radius_auth.so use_first_pass 
+auth 	 required pam_deny.so
 
-account required pam_unix.so
-account sufficient pam_tacplus.so encrypt service=raccess protocol=unknown
+account	  required pam_unix.so
+account	  sufficient pam_tacplus.so encrypt service=raccess protocol=unknown
 
-password sufficient pam_unix.so nullok md5 shadow
-password required pam_deny.so
+password  sufficient pam_unix.so nullok md5 shadow
+password  required pam_deny.so
 
-session sufficient pam_tacplus.so service=ppp protocol=lcp
-session required pam_limits.so
-session required pam_unix.so nullok
+session   sufficient pam_tacplus.so service=ppp protocol=lcp debug
+session   required pam_limits.so
+session   required pam_unix.so nullok
+
+
 
