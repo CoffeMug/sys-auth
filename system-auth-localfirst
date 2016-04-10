@@ -1,4 +1,4 @@
-# Remote first authentication order.
+# Local first authentication order.
 
 auth 	 required        pam_env.so
 auth 	 [default=ignore success=2] pam_succeed_if.so uid = 0
