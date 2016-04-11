@@ -5,7 +5,7 @@ auth 	 [default=ignore success=2] pam_succeed_if.so uid = 0
 auth 	 [default=ignore success=1] pam_succeed_if.so user = oper
 auth 	 [default=ignore success=1] pam_succeed_if.so uid != 0
 auth 	 sufficient pam_unix.so likeauth nullok 
-auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so encrypt try_first_pass debug 
+auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so encrypt try_first_pass 
 auth 	 sufficient pam_unix.so likeauth try_first_pass 
 auth 	 sufficient pam_radius_auth.so use_first_pass 
 auth 	 required pam_deny.so
@@ -16,7 +16,7 @@ account	  sufficient pam_tacplus.so encrypt service=raccess protocol=unknown
 password  sufficient pam_unix.so nullok md5 shadow
 password  required pam_deny.so
 
-session   sufficient pam_tacplus.so service=ppp protocol=lcp debug
+session   sufficient pam_tacplus.so service=ppp protocol=lcp 
 session   required pam_limits.so
 session   required pam_unix.so nullok
 
