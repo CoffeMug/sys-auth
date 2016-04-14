@@ -1,8 +1,8 @@
 # Local first authentication order.
 
-auth 	 required        pam_env.so
+auth 	 required  pam_env.so
 auth 	 sufficient pam_unix.so nullok
-auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so try_first_pass timeout=5
+auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
 auth 	 sufficient pam_radius_auth.so use_first_pass
 auth	 required pam_deny.so
 
