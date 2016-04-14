@@ -1,24 +1,18 @@
 # Local first authentication order.
 
 auth 	 required        pam_env.so
-auth 	 [default=ignore success=2] pam_succeed_if.so uid = 0
-auth 	 [default=ignore success=1] pam_succeed_if.so user = oper
-auth 	 [default=ignore success=1] pam_succeed_if.so uid != 0
-auth 	 sufficient pam_unix.so likeauth nullok 
-auth 	 sufficient pam_unix.so likeauth try_first_pass 
-auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so try_first_pass timeout=10
-auth 	 sufficient pam_radius_auth.so use_first_pass 
-auth 	 required pam_deny.so
+auth 	 sufficient pam_unix.so nullok
+auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so try_first_pass timeout=5
+auth 	 sufficient pam_radius_auth.so use_first_pass
+auth	 required pam_deny.so
 
 account	  required pam_unix.so
-account	  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=10
+account	  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 
 password  sufficient pam_unix.so nullok md5 shadow
+password  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 password  required pam_deny.so
 
-session   sufficient pam_tacplus.so service=ppp protocol=lcp timeout=10
 session   required pam_limits.so
 session   required pam_unix.so nullok
-
-
-
+session   sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
