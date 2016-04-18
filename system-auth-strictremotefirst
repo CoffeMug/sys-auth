@@ -4,12 +4,12 @@ auth 	 required        pam_env.so
 auth 	 [default=ignore success=1] pam_succeed_if.so uid != 0
 auth 	 sufficient pam_unix.so likeauth nullok
 auth 	 [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
-auth 	 sufficient pam_unix.so likeauth nullok try_first_pass
 auth 	 sufficient pam_radius_auth.so use_first_pass
+auth 	 sufficient pam_unix.so likeauth nullok try_first_pass
 auth	 required pam_deny.so
 
 account   [default=ignore success=1] pam_succeed_if.so uid = 0
-account	  [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so service=raccess protocol=unknown timeout=5
+account	  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 account	  required pam_unix.so
 
 password  [default=ignore success=1] pam_succeed_if.so uid = 0
@@ -18,7 +18,7 @@ password  sufficient pam_unix.so nullok md5 shadow
 password  required pam_deny.so
 
 session   [default=ignore success=1] pam_succeed_if.so uid = 0
-session   [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so service=raccess protocol=unknown timeout=5
+session   sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 session   required pam_limits.so
 session   required pam_unix.so nullok
 
