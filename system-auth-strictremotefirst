@@ -1,7 +1,7 @@
 # Strict remote first authentication order.
 
 auth      required        pam_env.so
-auth      [default=ignore success=1] pam_succeed_if.so uid != 0 user != oper
+auth      [default=ignore success=1] pam_succeed_if.so uid != 0
 auth      sufficient pam_unix.so likeauth nullok
 auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
 auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_radius_auth.so use_first_pass timeout=5
@@ -21,5 +21,6 @@ session   [default=ignore success=1] pam_succeed_if.so uid = 0
 session   sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 session   required pam_limits.so
 session   required pam_unix.so nullok
+
 
 
