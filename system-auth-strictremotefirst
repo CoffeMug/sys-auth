@@ -1,11 +1,17 @@
 # Strict remote first authentication order.
+# First authenticate with respect to the remote servers.
+# If all remote servers are unreachable, try the local user database.
+# If the remote authentication is denied, stop (die), access is denied.
+# root is an exception to the authentication order and is always
+# authenticated with respect to the local user database.
+#===============================================================================
 
-auth      required        pam_env.so
+auth      required pam_env.so
 auth      [default=ignore success=1] pam_succeed_if.so uid != 0
-auth      sufficient pam_unix.so likeauth nullok
+auth      [success=done new_authtok_reqd=ok ignore=ignore default=die] pam_unix.so likeauth nullok
 auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
-auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_radius_auth.so use_first_pass timeout=5
-auth      sufficient pam_unix.so likeauth nullok use_first_pass
+auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_radius_auth.so use_first_pass
+auth      [success=done new_authtok_reqd=ok ignore=ignore default=ignore] pam_unix.so likeauth nullok use_first_pass
 auth      required pam_deny.so
 
 account   [default=ignore success=1] pam_succeed_if.so uid = 0
@@ -21,6 +27,3 @@ session   [default=ignore success=1] pam_succeed_if.so uid = 0
 session   sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 session   required pam_limits.so
 session   required pam_unix.so nullok
-
-
-
