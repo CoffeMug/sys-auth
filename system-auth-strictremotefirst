@@ -4,14 +4,21 @@
 # If the remote authentication is denied, stop (die), access is denied.
 # root is an exception to the authentication order and is always
 # authenticated with respect to the local user database.
+# We have a special check for distinguish the root user using the pam_succeed_if.so
+# module. If we are root we ignore and go on to the next rule. Otherwise we have to
+# skip to the pam_tacplus line and continue from there.
+# We have a default=die option for both tacacs and radius servers to have a strict
+# check on the authentication cridentials. So if the server fails to authenticate
+# a user based on the cridentials provided we stop and return the failure to the
+# calling application. 
 #===============================================================================
 
 auth      required pam_env.so
-auth      [default=ignore success=1] pam_succeed_if.so uid != 0
-auth      [success=done new_authtok_reqd=ok ignore=ignore default=die] pam_unix.so likeauth nullok
-auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
-auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=die] pam_radius_auth.so use_first_pass
-auth      [success=done new_authtok_reqd=ok ignore=ignore default=ignore] pam_unix.so likeauth nullok use_first_pass
+auth      [default=1 success=ignore] pam_succeed_if.so uid = 0
+auth      [success=done new_authtok_reqd=done ignore=die default=die] pam_unix.so nullok debug
+auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=die] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5 debug
+auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=die] pam_radius_auth.so use_first_pass debug
+auth      [success=done new_authtok_reqd=ok default=ignore] pam_unix.so nullok try_first_pass debug
 auth      required pam_deny.so
 
 account   [default=ignore success=1] pam_succeed_if.so uid = 0
@@ -19,8 +26,8 @@ account   sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 account   required pam_unix.so
 
 password  [default=ignore success=1] pam_succeed_if.so uid = 0
-password  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
-password  sufficient pam_unix.so nullok md5 shadow
+password  [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=die] pam_tacplus.so service=raccess protocol=unknown timeout=5 debug
+password  sufficient pam_unix.so nullok sha512 shadow debug
 password  required pam_deny.so
 
 session   [default=ignore success=1] pam_succeed_if.so uid = 0

@@ -7,17 +7,17 @@
 #===============================================================================
 
 auth     required  pam_env.so
-auth     [default=ignore success=1] pam_succeed_if.so uid != 0
-auth     [success=done new_authtok_reqd=ok ignore=ignore default=die] pam_unix.so likeauth nullok
-auth     [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_unix.so likeauth nullok
-auth     [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
-auth     [success=done new_authtok_reqd=ok authinfo_unavail=ignore ignore=ignore default=ignore] pam_radius_auth.so use_first_pass
+auth     [default=1 success=ignore] pam_succeed_if.so uid = 0
+auth     [success=done new_authtok_reqd=ok ignore=die default=die] pam_unix.so nullok debug
+auth     [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_unix.so nullok debug
+auth     [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_tacplus.so login=login service=raccess protocol=unknown use_first_pass timeout=5 debug
+auth     [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_radius_auth.so use_first_pass debug
 auth     required pam_deny.so
 
 account  required pam_unix.so
 account  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 
-password  sufficient pam_unix.so nullok md5 shadow
+password  sufficient pam_unix.so nullok sha512 shadow
 password  sufficient pam_tacplus.so service=raccess protocol=unknown timeout=5
 password  required pam_deny.so
 
