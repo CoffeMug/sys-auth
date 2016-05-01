@@ -10,7 +10,7 @@ auth      required pam_env.so
 auth      [default=1 success=ignore] pam_succeed_if.so uid = 0
 auth      [success=done new_authtok_reqd=ok default=die] pam_unix.so nullok
 auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_tacplus.so login=login service=raccess protocol=unknown try_first_pass timeout=5
-auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_radius_auth.so use_first_pass
+auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_radius_auth.so try_first_pass
 auth      [success=done new_authtok_reqd=ok authinfo_unavail=ignore default=ignore] pam_unix.so nullok try_first_pass
 auth      required pam_deny.so
 
